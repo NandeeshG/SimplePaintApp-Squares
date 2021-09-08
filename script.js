@@ -39,7 +39,7 @@ canvas.addEventListener("mousedown", (e) => {
 
 canvas.addEventListener("mousemove", (e) => {
   let pos = calcPos(e);
-  if (pos && Math.abs(pos.w) >= 2 && Math.abs(pos.h) >= 2) {
+  if (substantialMov(pos)) {
     moved = true;
     createGuide(pos, checkForRect(pos));
   } else if (pos) {
@@ -50,7 +50,7 @@ canvas.addEventListener("mousemove", (e) => {
 canvas.addEventListener("mouseup", (e) => {
   let pos = calcPos(e);
   if (!pos || !moved) return sanitize();
-  if (Math.abs(pos.w) < 2 || Math.abs(pos.h) < 2) return sanitize();
+  if (!substantialMov(pos)) return sanitize();
 
   let id = checkForRect(pos);
 
@@ -198,4 +198,9 @@ function restoreAllAbove(z) {
   rectangles.forEach((v, i) => {
     if (v.z > z) restoreRectId(i);
   });
+}
+
+function substantialMov(pos) {
+  if (pos && (Math.abs(pos.w) >= 2 || Math.abs(pos.h) >= 2)) return true;
+  else return false;
 }
